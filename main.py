@@ -53,7 +53,7 @@ def main(url, out):
             calevent.add('summary', title)
             calevent.add('location', location)
             cal.add_component(calevent)
-        except Exception as e:
+        except Exception:
             print(
                 "Failed to parse event:\n{}".format(
                     textwrap.indent(event.get_text('\n', strip=True), '  '),

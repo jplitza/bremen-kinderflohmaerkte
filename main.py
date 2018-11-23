@@ -37,7 +37,12 @@ def main(url, out):
     for event in html.select('.content_kachel > ul > li'):
         try:
             calevent = icalendar.Event()
-            date, title, location, times = list(event.stripped_strings)[0:4]
+            try:
+                date, title, location, times = list(event.stripped_strings)[0:4]
+            except ValueError:
+                date, title, times = list(event.stripped_strings)[0:3]
+                title, location = re.split(r' im | in der ', title)
+
             times = re.fullmatch(
                 r'Von (\d\d?)(?::(\d\d))? bis (\d\d?)(?::(\d\d))? Uhr',
                 times,

@@ -44,7 +44,7 @@ def main(url, out):
                 title, location = re.split(r' im | in der ', title)
 
             times = re.fullmatch(
-                r'Von (\d\d?)(?::(\d\d))? bis (\d\d?)(?::(\d\d))? Uhr',
+                r'(?:Von )?(\d\d?)(?::(\d\d))? bis (\d\d?)(?::(\d\d))? Uhr',
                 times,
             ).groups('00')
 

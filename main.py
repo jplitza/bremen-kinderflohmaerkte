@@ -37,11 +37,18 @@ def main(url, out):
     for event in html.select('.content_kachel > ul > li'):
         try:
             calevent = icalendar.Event()
-            try:
-                date, title, location, times = list(event.stripped_strings)[0:4]
-            except ValueError:
-                date, title, times = list(event.stripped_strings)[0:3]
-                title, location = re.split(r' im | in der ', title)
+            lines = list(event.stripped_strings)
+            date = lines[0]
+            times = lines[-1]
+            description = ''
+            if len(lines) < 3:
+                raise Exception("Too few lines")
+            elif len(lines) == 3:
+                title, location = re.split(r' im | in der ', lines[1])
+            else:
+                location = lines[-2]
+                title = lines[1]
+                description = "\n".join(lines[2:-2])
 
             times = re.fullmatch(
                 r'(?:Von )?(\d\d?)(?::(\d\d))? bis (\d\d?)(?::(\d\d))? Uhr',
@@ -52,6 +59,7 @@ def main(url, out):
             calevent.add('dtend', parse_time(date, times[2:4]))
             calevent.add('summary', title)
             calevent.add('location', location)
+            calevent.add('description', description)
             cal.add_component(calevent)
         except Exception:
             print(

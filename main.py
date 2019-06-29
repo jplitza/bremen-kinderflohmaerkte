@@ -34,7 +34,7 @@ def main(url, out):
     req = requests.get(url)
     html = BeautifulSoup(req.text, 'html.parser')
     cal = icalendar.Calendar()
-    for event in html.select('.content_kachel > ul > li'):
+    for event in html.select('p + ul > li'):
         try:
             calevent = icalendar.Event()
             lines = list(event.stripped_strings)

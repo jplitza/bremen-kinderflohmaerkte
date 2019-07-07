@@ -40,26 +40,33 @@ def main(url, out):
             lines = list(event.stripped_strings)
             date = lines[0]
             times = lines[-1]
-            description = ''
+            description = []
+            location = ''
             if len(lines) < 3:
                 raise Exception("Too few lines")
             elif len(lines) == 3:
                 title, location = re.split(r' im | in der ', lines[1])
             else:
-                location = lines[-2]
-                title = lines[1]
-                description = "\n".join(lines[2:-2])
+                for line in lines[1:]:
+                    try:
+                        times = re.fullmatch(
+                            r'(?:Von\s+)?(\d\d?)(?::(\d\d))?\s+'
+                            r'bis\s+(\d\d?)(?::(\d\d))?\s+Uhr',
+                            line,
+                        ).groups('00')
+                    except AttributeError:
+                        if any(c.isdigit() for c in line) and not location:
+                            location = line
+                        else:
+                            description.append(line)
 
-            times = re.fullmatch(
-                r'(?:Von )?(\d\d?)(?::(\d\d))? bis (\d\d?)(?::(\d\d))? Uhr',
-                times,
-            ).groups('00')
+                title = description.pop(0)
 
             calevent.add('dtstart', parse_time(date, times[0:2]))
             calevent.add('dtend', parse_time(date, times[2:4]))
             calevent.add('summary', title)
             calevent.add('location', location)
-            calevent.add('description', description)
+            calevent.add('description', "\n".join(description))
             cal.add_component(calevent)
         except Exception:
             print(

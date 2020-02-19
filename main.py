@@ -44,23 +44,24 @@ def main(url, out):
             location = ''
             if len(lines) < 3:
                 raise Exception("Too few lines")
-            elif len(lines) == 3:
-                title, location = re.split(r' im | in der ', lines[1])
-            else:
-                for line in lines[1:]:
-                    try:
-                        times = re.fullmatch(
-                            r'(?:Von\s+)?(\d\d?)(?::(\d\d))?\s+'
-                            r'bis\s+(\d\d?)(?::(\d\d))?\s+Uhr',
-                            line,
-                        ).groups('00')
-                    except AttributeError:
-                        if any(c.isdigit() for c in line) and not location:
-                            location = line
-                        else:
-                            description.append(line)
 
-                title = description.pop(0)
+            for line in lines[1:]:
+                try:
+                    times = re.fullmatch(
+                        r'(?:Von\s+)?(\d\d?)(?::(\d\d))?\s+'
+                        r'bis\s+(\d\d?)(?::(\d\d))?\s+Uhr',
+                        line,
+                    ).groups('00')
+                except AttributeError:
+                    if len(lines) == 3:
+                        description = re.split(r' im | in der ', lines[1])
+                        location = description.pop()
+                    elif any(c.isdigit() for c in line) and not location:
+                        location = line
+                    else:
+                        description.append(line)
+
+            title = description.pop(0)
 
             calevent.add('dtstart', parse_time(date, times[0:2]))
             calevent.add('dtend', parse_time(date, times[2:4]))

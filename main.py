@@ -50,8 +50,8 @@ def main(url, out):
             for line in lines[1:]:
                 try:
                     times = re.fullmatch(
-                        r'(?:Von\s+)?(\d\d?)(?::(\d\d))?\s+'
-                        r'bis\s+(\d\d?)(?::(\d\d))?\s+Uhr',
+                        r'(?:Von\s+|Ab\s+)?(\d\d?)(?::(\d\d))?(?:\s*Uhr)?'
+                        r'(?:(?:\s+bis\s+|-)(\d\d?)(?::(\d\d))?\s+Uhr)?',
                         line,
                     ).groups('00')
                 except AttributeError:

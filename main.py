@@ -35,7 +35,7 @@ def main(url, out):
     html = BeautifulSoup(req.text, 'html.parser')
     cal = icalendar.Calendar()
     for event in html.select('.leading-normal p + p + p'):
-        if len(event) == 0:
+        if len(event) <= 1:
             continue
         try:
             calevent = icalendar.Event()

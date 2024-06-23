@@ -66,7 +66,7 @@ def main(url, out):
             title = description.pop(0)
 
             calevent.add('dtstart', parse_time(date, times[0:2]))
-            calevent.add('dtend', parse_time(date, times[2:4]))
+            calevent.add('dtend', parse_time(date, times[2:4] if times[2:4] != ('00', '00') else times[0:2]))
             calevent.add('summary', title)
             calevent.add('location', location)
             calevent.add('description', "\n".join(description))

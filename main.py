@@ -51,7 +51,7 @@ def main(url, out):
                 try:
                     times = re.fullmatch(
                         r'(?:Von\s+|Ab\s+)?(\d\d?)(?::(\d\d))?(?:\s*Uhr)?'
-                        r'(?:(?:\s+bis\s+|-)(\d\d?)(?::(\d\d))?\s+Uhr)?',
+                        r'(?:(?:\s+bis\s+|\s*[-–]\s*)(\d\d?)(?::(\d\d))?\s+Uhr)?',
                         line,
                     ).groups('00')
                 except AttributeError:
